@@ -1,0 +1,2 @@
+del .classpath
+gradlew eclipseClasspath

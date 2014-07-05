@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+<components namespace="settings">
+
+																									<component class="java.lang.String"
+		name=	"basePackage"																		><arg>
+				"jp.wda.azeda"																		</arg></component>
+
+																									<component class="java.lang.String"
+		name=	"actionsPackage"																	><arg>
+				"jp.wda.azeda.core.actions"															</arg></component>
+
+																									<component class="java.lang.String"
+		name=	"servicesPackage"																	><arg>
+				"jp.wda.azeda.core.logics"															</arg></component>
+
+																									<component class="java.lang.String"
+		name=	"daemonsPackage"																	><arg>
+				"jp.wda.azeda.core.daemons"															</arg></component>
+
+																									<component class="java.lang.String"
+		name=	"daoPackage"																		><arg>
+				"jp.wda.azeda.dao"																	</arg></component>
+
+																									<component class="java.lang.String"
+		name=	"fileEncoding"																		><arg>
+				"UTF-8"																				</arg></component>
+
+																									<component class="java.lang.String"
+		name=	"defaultLocale"																		><arg>
+				"en"																				</arg></component>
+
+
+																									<component class="java.lang.String"
+		name=	"smtpServer"																		><arg>
+				"localhost"																			</arg></component>
+
+</components>

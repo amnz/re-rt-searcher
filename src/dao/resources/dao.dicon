@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+<components namespace="dao">
+	<include path="settings.dicon"/>
+	<include path="j2ee.dicon"/>
+
+	<!--
+	**********************************************************************************************
+	* Data Access Objects
+	**********************************************************************************************
+	-->
+	<component	name="annotationReaderFactory"
+				class="org.seasar.dao.annotation.tiger.impl.AnnotationReaderFactoryImpl"/>
+
+	<component	class="org.seasar.dao.impl.ValueTypeFactoryImpl"/>
+	<component	class="org.seasar.dao.impl.DaoNamingConventionImpl"/>
+	<component	class="org.seasar.dao.impl.BeanMetaDataFactoryImpl"/>
+	<component	class="org.seasar.dao.impl.NullBeanEnhancer"/>
+	<component	class="org.seasar.dao.impl.ResultSetHandlerFactoryImpl"/>
+	<component	class="org.seasar.dao.impl.DtoMetaDataFactoryImpl"/>
+	<component	class="org.seasar.dao.impl.PropertyTypeFactoryBuilderImpl"/>
+	<component	class="org.seasar.dao.impl.RelationPropertyTypeFactoryBuilderImpl"/>
+	<component	class="org.seasar.dao.impl.DefaultTableNaming"/>
+	<component	class="org.seasar.dao.impl.DefaultColumnNaming"/>
+	<component	class="org.seasar.dao.impl.ProcedureMetaDataFactoryImpl"/>
+	<component	class="org.seasar.extension.jdbc.types.StringClobType"	 name="stringClobType"/>
+
+	<!-- pager
+	<component	name="statementFactory"
+				class="org.seasar.extension.jdbc.impl.ConfigurableStatementFactory">
+		<arg>
+			<component class="org.seasar.dao.pager.PagerStatementFactory"/>
+		</arg>
+		<property name="fetchSize">100</property>
+	</component>
+	<component name="pagerInterceptor" class="org.seasar.dao.pager.PagerS2DaoInterceptorWrapper">
+		<arg>
+			<component name="daoInterceptor" class="org.seasar.dao.interceptors.S2DaoInterceptor"/>
+		</arg>
+	</component>
+	-->
+
+	<component	name="statementFactory"		class="org.seasar.extension.jdbc.impl.BasicStatementFactory"/>
+	<component	name="resultSetFactory"		class="org.seasar.extension.jdbc.impl.BasicResultSetFactory"/>
+	<component class="org.seasar.dao.impl.DaoMetaDataFactoryImpl">
+		<arg>j2ee.dataSource</arg>
+		<arg>statementFactory</arg>
+		<arg>resultSetFactory</arg>
+		<arg>annotationReaderFactory</arg>
+	</component>
+
+	<component name="daoInterceptor" class="org.seasar.dao.interceptors.S2DaoInterceptor"/>
+
+
+	<!-- ++ Auto Register ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+	<component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister">
+		<property name="autoNaming">
+			<component class="org.seasar.framework.container.autoregister.DefaultAutoNaming" />
+		</property>
+		<initMethod name="addClassPattern">
+			<arg>settings.daoPackage</arg>
+			<arg>".*Dao"</arg>
+		</initMethod>
+	</component>
+	<component class="org.seasar.framework.container.autoregister.AspectAutoRegister">
+		<property name="interceptor">daoInterceptor</property>
+		<initMethod name="addClassPattern">
+			<arg>settings.daoPackage</arg>
+			<arg>".*Dao"</arg>
+		</initMethod>
+	</component>
+
+
+	<!-- ++ Manual Register ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+</components>

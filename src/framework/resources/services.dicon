@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+<components>
+	<include path="aop.dicon"/>
+	<include path="dao.dicon"/>
+
+	<!--
+	**********************************************************************************************
+	* Manual Register Services
+	**********************************************************************************************
+	-->
+
+	<component class="jp.wda.azeda.core.daemons.impl.CrawlerFactoryImpl">
+		<property name="expired">30</property><!-- days. -->
+
+		<initMethod name="start"></initMethod>
+	</component>
+
+	<component class="jp.wda.azeda.core.daemons.impl.UserCrawlerImpl" instance="prototype">
+		<property name="interval">900000</property><!-- msec. -->
+	</component>
+
+	<component class="jp.wda.azeda.core.daemons.impl.RetweetsCrawlerImpl" instance="prototype">
+		<property name="retweetsInterval">60000</property><!-- msec. -->
+		<property name="timelineInterval">5000</property><!-- msec. -->
+		<property name="timelinePages">3</property><!-- msec. -->
+		<property name="retweetExpired">120</property><!-- min. -->
+		<property name="maxStores">3</property><!-- min. -->
+	</component>
+
+	<!--
+	**********************************************************************************************
+	* Auto Register Services
+	**********************************************************************************************
+	-->
+
+	<component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister">
+		<property name="autoNaming">
+			<component class="org.seasar.framework.container.autoregister.DefaultAutoNaming">
+			</component>
+		</property>
+
+		<initMethod name="addClassPattern">
+			<arg>settings.servicesPackage</arg>
+			<arg>".*ServiceImpl"</arg>
+		</initMethod>
+	</component>
+	<component class="org.seasar.framework.container.autoregister.AspectAutoRegister">
+		<property name="interceptor">aop.requiredTx</property>
+
+		<initMethod name="addClassPattern">
+			<arg>settings.servicesPackage</arg>
+			<arg>".*ServiceImpl"</arg>
+		</initMethod>
+	</component>
+
+
+	<!--
+	**********************************************************************************************
+	* Session Beans
+	**********************************************************************************************
+	-->
+
+
+	<!--
+	**********************************************************************************************
+	* Servlet Filter
+	**********************************************************************************************
+	-->
+
+</components>

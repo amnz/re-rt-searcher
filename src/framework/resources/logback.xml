@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<target>System.out</target>
+		<encoder>
+			<!-- <pattern>%d{yyyy/MM/dd HH:mm:ss} [%thread] %-5level %logger{10} - %msg%n</pattern> -->
+			<!-- <pattern>%d{yyyy/MM/dd HH:mm:ss}[%p] %m                                            [%t] %C{1}#%M:%line%n</pattern> -->
+			<pattern>%d{yyyy/MM/dd HH:mm:ss} %-5level:[%t] %m%n</pattern>
+					</encoder>
+	</appender>
+
+	<root>
+		<level value="DEBUG" />
+		<appender-ref ref="STDOUT" />
+	</root>
+
+	<logger name="twitter4j">
+		<level value="INFO" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+</configuration>

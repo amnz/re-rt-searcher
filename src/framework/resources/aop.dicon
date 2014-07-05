@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container//EN"
+"http://www.seasar.org/dtd/components.dtd">
+<components namespace="aop">
+	<include path="j2ee.dicon"/>
+
+	<!--
+	**********************************************************************************************
+	* Aspects
+	**********************************************************************************************
+	-->
+
+	<component name="traceInterceptor"
+		class="jp.wda.mutsumi.framework.listener.TransactionLoggerInterceptor"/>
+	<component name="traceThrowsInterceptor"
+		class="org.seasar.framework.aop.interceptors.TraceThrowsInterceptor"/>
+
+	<component name="requiredTx" class="org.seasar.framework.aop.interceptors.InterceptorChain">
+		<initMethod name="add"><arg>traceInterceptor</arg></initMethod>
+		<initMethod name="add"><arg>j2ee.requiredTx</arg></initMethod>
+	</component>
+
+</components>

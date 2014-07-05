@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE components PUBLIC "-//SEASAR2.1//DTD S2Container//EN"
+	"http://www.seasar.org/dtd/components21.dtd">
+<components>
+	<include path="aop.dicon"/>
+	<include path="services.dicon"/>
+
+	<!--
+	**********************************************************************************************
+	* Auto Register Actions & DTO
+	**********************************************************************************************
+	-->
+	<component class="org.seasar.framework.container.autoregister.FileSystemComponentAutoRegister">
+		<property name="autoNaming">
+			<component class="org.seasar.framework.container.autoregister.DefaultAutoNaming">
+			</component>
+		</property>
+		<property name="instanceDef">
+		    @org.seasar.framework.container.deployer.InstanceDefFactory@OUTER
+		</property>
+
+		<initMethod name="addClassPattern">
+			<arg>settings.actionsPackage</arg>
+			<arg>".*Action"</arg>
+		</initMethod>
+	</component>
+
+	<!--
+	**********************************************************************************************
+	* Manual Register Actions
+	**********************************************************************************************
+	-->
+
+
+	<!--
+	**********************************************************************************************
+	* Manual Register DTO
+	**********************************************************************************************
+	-->
+
+</components>

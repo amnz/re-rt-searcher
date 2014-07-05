@@ -1,0 +1,13 @@
+syntax: glob
+
+.git/*
+.gradle/*
+.settings/*
+.classpath
+.project
+
+build/*
+webapp/*
+_参考資料_/*
+
+*.swf

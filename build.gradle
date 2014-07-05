@@ -1,0 +1,83 @@
+apply plugin: 'war'
+apply plugin: 'jetty'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.7
+version = '1.0'
+
+
+eclipse.classpath.file {
+	whenMerged { classpath ->
+		classpath.entries.findAll { entry -> entry.kind == 'output' }*.path = 'build/classes/main'
+	}
+}
+eclipse.project.file.whenMerged { project ->
+	project.natures.add(0, 'org.springsource.ide.eclipse.gradle.core.nature')
+	project.natures += 'eclihx.core.haxenature'
+}
+
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.12'
+}
+
+
+jettyRun {
+    reload = "automatic"
+    scanIntervalSeconds = 1
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+
+sourceSets {
+	main {
+		java {
+			srcDir 'src/framework/java'
+			srcDir 'src/dao/java'
+			srcDir 'src/framework/resources'
+			srcDir 'src/dao/resources'
+		}
+	}
+}
+
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://maven.seasar.org/maven2/"
+    }
+}
+
+dependencies {
+    providedCompile 'javax.ws.rs:javax.ws.rs-api:2.0'
+//  providedCompile 'javax.servlet:servlet-api:2.4'
+
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    compile 'ch.qos.logback:logback-classic:1.0.12'
+    compile 'org.glassfish.jersey.core:jersey-server:2.10'
+    compile 'org.glassfish.jersey.core:jersey-client:2.10'
+    compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.10'
+    compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.10'
+	compile 'org.glassfish.jersey.ext:jersey-mvc-jsp:2.10'
+    compile 'org.twitter4j:twitter4j-core:4.0.1'
+
+    compile 'javax.transaction:jta:1.1'
+    compile 'postgresql:postgresql:9.1-901-1.jdbc4'
+
+
+    // Seasar2
+    compile 'org.seasar.container:s2-framework:2.3.23'
+    compile 'org.seasar.container:s2-extension:2.3.23'
+    compile 'org.seasar.container:s2-tiger:2.3.23'
+    compile 'org.seasar.dao:s2-dao:1.0.51'
+    compile 'org.seasar.dao:s2-dao-tiger:1.0.51'
+    compile 'org.seasar.mayaa:mayaa:1.1.32'
+
+
+    // Jersey Test Framework — Grizzly2 container
+    testCompile 'org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.4'
+}

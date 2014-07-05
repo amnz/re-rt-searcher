@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ========================================================================================================================
+     $Id$
+     $Author$
+     $Revision$
+     $Date$
+     ========================================================================================================================  -->
+
+<m:mayaa xmlns:m="http://mayaa.seasar.org"
+         xmlns:html="http://struts.apache.org/tags-html"
+         xmlns:bean="http://struts.apache.org/tags-bean"
+         xmlns:s2struts="http://www.seasar.org/tags-s2struts">
+
+	<m:beforeRender>
+		function source(src){
+			if(src.indexOf("../") == 0) { return source(src.substring(3)); }
+			return request.contextPath + '/' + src;
+		}
+	</m:beforeRender>
+	
+	<m:echo		m:xpath="/html/head/link"				><m:attribute name="href"  value="${source(href)}"  /></m:echo>
+	<m:echo		m:xpath="//script[@src!='']"			><m:attribute name="src"   value="${source(src)}"   /></m:echo>
+	<m:echo		m:xpath="//embed[@src!='']"				><m:attribute name="src"   value="${source(src)}"   /></m:echo>
+	<m:echo		m:xpath="//img[@src!='']"				><m:attribute name="src"   value="${source(src)}"   /></m:echo>
+	<m:echo		m:xpath="//object/param[@name='movie']"	><m:attribute name="value" value="${source(value)}" /></m:echo>
+	
+	<m:write m:id="deftest" m:replace="true" value="default効いてるよ"/>
+
+</m:mayaa>

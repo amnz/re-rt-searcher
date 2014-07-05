@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:m="http://mayaa.seasar.org">
+
+<head>
+<meta http-equiv="Content-Type"        content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language"    content="ja">
+<meta http-equiv="Content-Style-Type"  content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Pragma"              content="no-cache">
+<meta http-equiv="Cache-Control"       content="no-cache">
+<meta http-equiv="Expires"             content="Thu, 01 Dec 1994 16:00:00 GMT">
+<meta name="Revision" content="$Revision$">
+<meta name="Updated"  content="$Date$">
+
+<title>RE-RT Searcher</title>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/retweets.js"></script>
+<style>
+    .responses {
+        border : 1px solid #999;
+        padding: 5px 5px 5px 25px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>リツイートされたつぶやき一覧</h1>
+<form action="register.html" method="GET">
+    <label for="account">登録するアカウント</label>
+    <input type="text" size="20" name="account" id="account"/>
+    <input type="submit" value="登録"/>
+</form>
+
+<div id="tweets">
+</div>
+
+
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id))    {js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}    (document,"script","twitter-wjs");</script>
+
+</body>
+</html>

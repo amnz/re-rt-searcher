@@ -1,0 +1,13 @@
+メインクラス
+	org.gradle.wrapper.GradleWrapperMain
+
+プログラムの引数
+	jettyRun
+
+VM引数
+	-Dorg.gradle.appname=gradlew
+
+JRE	1.7
+
+クラスパス：ユーザーエントリ
+	gradle/wrapper/gradle-wrapper.jar
