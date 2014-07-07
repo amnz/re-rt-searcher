@@ -60,7 +60,7 @@
 					}
 					for (var i = 0; i < data.tweets.length; i++) {
 						var id = data.tweets[i];
-						var t = $('<blockquote class="twitter-tweet" lang="ja"><p>...</p><a href="https://twitter.com/' + data.screenName + '/status/' + id + '">...</a></blockquote>');
+						var t = $('<blockquote class="twitter-tweet" lang="ja" data-conversation="none" data-cards="hidden"><p>...</p><a href="https://twitter.com/' + data.screenName + '/status/' + id + '">...</a></blockquote>');
 						$(target).append(t);
 
 						var resDivID = "responses" + counter++;
@@ -120,7 +120,7 @@
 						for (var i = 0; i < data.tweets.length; i++) {
 							var tweet = data.tweets[i];
 							var id = tweet.ID;
-							var t = $('<blockquote class="twitter-tweet" lang="ja"><p>...</p><a href="https://twitter.com/' + tweet.screenName + '/status/' + id + '">...</a></blockquote>');
+							var t = $('<blockquote class="twitter-tweet" lang="ja" data-conversation="none" data-cards="hidden"><p>...</p><a href="https://twitter.com/' + tweet.screenName + '/status/' + id + '">...</a></blockquote>');
 							$div.append(t);
 						}
 
