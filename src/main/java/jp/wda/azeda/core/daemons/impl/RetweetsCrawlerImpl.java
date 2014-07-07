@@ -41,6 +41,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.UserMentionEntity;
 import twitter4j.auth.AccessToken;
 
 /**
@@ -235,11 +236,11 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 				log.error("", ex);
 			}
 
-			try {
-				sleep(retweetsInterval);
-			} catch(InterruptedException ex) {
-				ex.printStackTrace();
-			}
+//			try {
+//				sleep(retweetsInterval);
+//			} catch(InterruptedException ex) {
+//				ex.printStackTrace();
+//			}
 			if(!alive) {
 				log.debug("RetweetsCrawler terminated." + tweets.size());
 				return;
@@ -272,7 +273,8 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 		AccessToken  accessToken  = new AccessToken(tweet.getAccessToken().getAccessToken(), tweet.getAccessToken().getAccessTokenSecret());
 		twitter.setOAuthAccessToken(accessToken);
 
-		ResponseList<Status> rt = twitter.getRetweets(tweet.getTweetID());
+		//ResponseList<Status> rt = twitter.getRetweets(tweet.getTweetID());
+		ResponseList<Status> rt = getRetweets(twitter, tweet.getTweetID());
 		if(!alive) { return; }
 		if(rt == null || rt.size() == 0) { return; }
 
@@ -305,12 +307,12 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 
 
 
-			try {
-				sleep(timelineInterval);
-			} catch(InterruptedException ex) {
-				ex.printStackTrace();
-			}
-			if(!alive) { return; }
+//			try {
+//				sleep(timelineInterval);
+//			} catch(InterruptedException ex) {
+//				ex.printStackTrace();
+//			}
+//			if(!alive) { return; }
 
 
 
@@ -318,14 +320,17 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 			if(!alive) { return; }
 			if(userTimeline == null) { continue; }
 
-			int responses = -1;
+			//int responses = -1;
 			for(int i = userTimeline.size() - 1; i >= 0; i--) {
 				Status s = userTimeline.get(i);
-				if(responses < 0 && s.isRetweet() && s.getRetweetedStatus().getId() == tweet.getTweetID()) {
-					responses = 0;
+				if(/*responses < 0 &&*/ s.isRetweet() && s.getRetweetedStatus().getId() == tweet.getTweetID()) {
+					//responses = 0;
 					continue;
 				}
-				if(responses < 0) { continue; }
+				//if(responses < 0) { continue; }
+				if(s.isRetweet()) { continue; }
+				UserMentionEntity[] mentions = s.getUserMentionEntities();
+				if(mentions == null || mentions.length > 0) { continue; }
 
 				log.debug(s.getId() + ":" + s.getCreatedAt() + "(" + s.isRetweet() + ") " + s.getText());
 
@@ -336,12 +341,14 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 				retweet.setScreenName(status.getUser().getScreenName());
 				dtos.add(retweet);
 
-				if(responses++ > maxStores) { break; }
+				insertRetweeter(twitter.getId(), tweet.getTweetID(), retweeter);
+				break;
+				//if(responses++ > maxStores) { break; }
 			}
 
-			if(responses > 0) {
-				insertRetweeter(twitter.getId(), tweet.getTweetID(), retweeter);
-			}
+			//if(responses > 0) {
+			//	insertRetweeter(twitter.getId(), tweet.getTweetID(), retweeter);
+			//}
 		}
 
 		if(dtos.size() > 0) { rtDao.insertBatch(dtos); }
@@ -375,7 +382,8 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 		Paging paging = new Paging(retweetTo);
 		paging.setPage(page);
 		paging.setCount(100);
-		ResponseList<Status> userTimeline = twitter.getUserTimeline(retweeter, paging);
+		//ResponseList<Status> userTimeline = twitter.getUserTimeline(retweeter, paging);
+		ResponseList<Status> userTimeline = gtUserTimeline(twitter, retweeter, paging);
 
 		if(userTimeline.size() == 0) { return null; }
 
@@ -387,14 +395,95 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 			}
 		}
 
-		try {
-			sleep(timelineInterval);
-		} catch(InterruptedException ex) {
-			ex.printStackTrace();
-		}
-		if(!alive) { return null; }
+//		try {
+//			sleep(timelineInterval);
+//		} catch(InterruptedException ex) {
+//			ex.printStackTrace();
+//		}
+//		if(!alive) { return null; }
 
 		return loadRetweetersTweets(twitter, retweetTo, retweeter, page + 1);
+	}
+
+	long getRetweetsTimer = 0;
+	long getRetweetsCounter = 0;
+	/**
+	 *
+	 * @param twitter
+	 * @param twitterID
+	 * @return
+	 * @throws TwitterException
+	 */
+	private ResponseList<Status> getRetweets(Twitter twitter, long twitterID) throws TwitterException {
+		if(getRetweetsTimer == 0) {
+			getRetweetsTimer = System.currentTimeMillis();
+		}
+		long waiting = 15*60*1000 - (System.currentTimeMillis() - getRetweetsTimer);
+		if(++getRetweetsCounter >= 15) {
+			if(waiting > 0) {
+				log.info("レイトリミット制限のため、getRetweetsを" + (waiting / 1000) + "秒お休みします。");
+				try {
+					sleep(waiting);
+				} catch(InterruptedException exx) {
+					log.error("", exx);
+				}
+			}
+			getRetweetsTimer = System.currentTimeMillis();
+			getRetweetsCounter = 0;
+		}
+
+		try {
+			return twitter.getRetweets(twitterID);
+		} catch(TwitterException ex) {
+			log.error("getRetweetsでtwitter例外が発生したので15分お休みします。", ex);
+			try {
+				sleep(15*60*1000);
+			} catch(InterruptedException exx) {
+				log.error("", exx);
+			}
+			return twitter.getRetweets(twitterID);
+		}
+	}
+
+	long gtUserTimelineTimer = 0;
+	long gtUserTimelineCounter = 0;
+	/**
+	 *
+	 * @param twitter
+	 * @param retweeter
+	 * @param paging
+	 * @return
+	 * @throws TwitterException
+	 */
+	private ResponseList<Status> gtUserTimeline(Twitter twitter, long retweeter, Paging paging) throws TwitterException {
+		if(gtUserTimelineTimer == 0) {
+			gtUserTimelineTimer = System.currentTimeMillis();
+		}
+		long waiting = 15*60*1000 - (System.currentTimeMillis() - gtUserTimelineTimer);
+		if(++gtUserTimelineCounter >= 180) {
+			if(waiting > 0) {
+				log.info("レイトリミット制限のため、gtUserTimelineを" + (waiting / 1000) + "秒お休みします。");
+				try {
+					sleep(waiting);
+				} catch(InterruptedException exx) {
+					log.error("", exx);
+				}
+			}
+			gtUserTimelineTimer = System.currentTimeMillis();
+			gtUserTimelineCounter = 0;
+		}
+
+		try {
+			return twitter.getUserTimeline(retweeter, paging);
+		} catch(TwitterException ex) {
+			log.error("gtUserTimelineでtwitter例外が発生したので15分お休みします。", ex);
+			try {
+				sleep(15*60*1000);
+			} catch(InterruptedException exx) {
+				log.error("", exx);
+			}
+			return twitter.getUserTimeline(retweeter, paging);
+		}
 	}
 
 	/**
