@@ -4,7 +4,9 @@
 /.settings/
 .classpath
 .project
+/src/main/webapp/.idea/
 /src/main/resources/twitter4j.properties
+/src/profile/deploy/
 /webapp/
 /_参考資料_/
-/src/main/webapp/.idea/
+/jetty7.4.4/
