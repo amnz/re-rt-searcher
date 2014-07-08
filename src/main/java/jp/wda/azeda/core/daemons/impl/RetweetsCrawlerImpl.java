@@ -75,6 +75,10 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 
 	private List<RetweetedTweet> tweets;
 
+	private List<Retweet>   dtoRetweets;
+
+	private List<Retweeter> dtoRetweeters;
+
 	// プロパティ ///////////////////////////////////////////////////////////////////////
 	//                                                                      Properties //
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -225,7 +229,9 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 	 *
 	 */
 	public void run() {
-		tweets = new ArrayList<RetweetedTweet>();
+		tweets        = new ArrayList<RetweetedTweet>();
+		dtoRetweets   = new ArrayList<Retweet>();
+		dtoRetweeters = new ArrayList<Retweeter>();
 
 		while(true) {
 			try {
@@ -289,7 +295,6 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 
 
 
-		List<Retweet> dtos = new ArrayList<Retweet>();
 		for(Status status : retweets.values()) {
 			long retweeter = status.getUser().getId();
 			long oldest = System.currentTimeMillis() - retweetExpired*60*1000;
@@ -318,15 +323,37 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 				retweet.setRetweetTo(tweet.getTweetID());
 				retweet.setRetweeterID(retweeter);
 				retweet.setScreenName(status.getUser().getScreenName());
-				dtos.add(retweet);
+				dtoRetweets.add(retweet);
 
 				insertRetweeter(twitter.getId(), tweet.getTweetID(), retweeter);
 				break;
 			}
 		}
 
-		if(dtos.size() > 0) { rtDao.insertBatch(dtos); }
+		register();
  	}
+
+	/**
+	 *
+	 */
+	private void register() {
+		for(Retweeter dto : dtoRetweeters) {
+			try {
+				retweetersDao.insert(dto);
+			} catch(RuntimeException ex) {
+				log.error(dto.getUserID() + "を登録済みに設定できません。");
+			}
+		}
+		for(Retweet dto : dtoRetweets) {
+			try {
+				rtDao.insert(dto);
+			} catch(RuntimeException ex) {
+				log.error(dto.getTweetID() + "(" + dto.getScreenName() + ")" + "の登録に失敗しました。");
+			}
+		}
+		dtoRetweeters.clear();
+		dtoRetweets.clear();
+	}
 
 	/**
 	 *
@@ -461,18 +488,12 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 	 * @param retweeter
 	 * @throws TwitterException
 	 */
-	private void insertRetweeter(long userID, long retweetTo, long retweeter) throws TwitterException {
-		if(!alive) { return; }
+	private void insertRetweeter(long userID, long retweetTo, long retweeter) {
 		Retweeter dto = new Retweeter();
 		dto.setRetweeterID(retweeter);
 		dto.setRetweetTo(retweetTo);
 		dto.setUserID(userID);
-
-		try {
-			retweetersDao.insert(dto);
-		} catch(RuntimeException ex) {
-			log.error(userID + "を登録済みに設定できません。" , ex);
-		}
+		dtoRetweeters.add(dto);
 	}
 
 }

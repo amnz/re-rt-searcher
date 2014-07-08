@@ -58,6 +58,6 @@ public interface RetweetersDao {
 	 * @return
 	 */
 	@NoPersistentProperty({ "RegisteredAt" })
-	public int insertBatch(Retweeter[] dtos);
+	public int insertBatch(List<Retweeter> dtos);
 
 }
