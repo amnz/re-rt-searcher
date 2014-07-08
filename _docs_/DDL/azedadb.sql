@@ -62,7 +62,7 @@ CREATE TABLE Retweets
 	RetweeterID bigint NOT NULL,
 	ScreenName varchar NOT NULL,
 	RegisteredAt timestamp DEFAULT now() NOT NULL,
-	PRIMARY KEY (TweetID)
+	PRIMARY KEY (TweetID, RetweetTo)
 ) WITHOUT OIDS;
 
 
