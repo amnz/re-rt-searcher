@@ -104,8 +104,8 @@ public class RootAction extends ActionBase {
 	public Response checkAuthorized(
 			  @PathParam("account")				String account
 			  ) throws TwitterException {
-		URI uri2 = uriInfo.getBaseUriBuilder().path("/authorized/").build();
-		return Response.ok(twitterService.checkAuthorized(account, uri2.toString())).build();
+		URI uri = uriInfo.getBaseUriBuilder().path("/authorized/").build();
+		return Response.ok(twitterService.checkAuthorized(account, uri.toString())).build();
 	}
 
 	/**
