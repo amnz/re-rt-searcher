@@ -24,6 +24,7 @@ import java.util.List;
 import org.seasar.dao.annotation.tiger.NoPersistentProperty;
 import org.seasar.dao.annotation.tiger.Query;
 import org.seasar.dao.annotation.tiger.S2Dao;
+import org.seasar.dao.annotation.tiger.Sql;
 
 /**
  *
@@ -50,7 +51,22 @@ public interface RetweetedTweetsDao {
 	 * @param oldest
 	 * @return
 	 */
-	@Query("RetweetedTweets.UserID=? order by TweetID desc limit ? offset ?")
+	/*@Query("RetweetedTweets.UserID=? order by TweetID desc limit ? offset ?")*/
+	@Sql("select"
+			+ "	  t.tweetid "
+			+ "	, t.userid "
+			+ "	, t.registeredat "
+			+ "	, r.lastretweetedAt "
+			+ " from "
+			+ "	retweetedtweets t "
+			+ "		left join (select retweetto, max(registeredat) as lastretweetedAt from retweets group by retweetto) r on t.tweetid=r.retweetto "
+			+ " where "
+			+ "	t.userid=?"
+			+ " order by "
+			+ "	  r.lastretweetedAt desc NULLS LAST "
+			+ "	, tweetid desc "
+			+ " limit ? offset ? "
+			)
 	public List<RetweetedTweet> getTweets(long userID, int limit, int offset);
 
 	/**
