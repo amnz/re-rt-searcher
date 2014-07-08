@@ -236,11 +236,6 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 				log.error("", ex);
 			}
 
-//			try {
-//				sleep(retweetsInterval);
-//			} catch(InterruptedException ex) {
-//				ex.printStackTrace();
-//			}
 			if(!alive) {
 				log.debug("RetweetsCrawler terminated." + tweets.size());
 				return;
@@ -273,7 +268,6 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 		AccessToken  accessToken  = new AccessToken(tweet.getAccessToken().getAccessToken(), tweet.getAccessToken().getAccessTokenSecret());
 		twitter.setOAuthAccessToken(accessToken);
 
-		//ResponseList<Status> rt = twitter.getRetweets(tweet.getTweetID());
 		ResponseList<Status> rt = getRetweets(twitter, tweet.getTweetID());
 		if(!alive) { return; }
 		if(rt == null || rt.size() == 0) { return; }
@@ -307,29 +301,14 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 
 
 
-//			try {
-//				sleep(timelineInterval);
-//			} catch(InterruptedException ex) {
-//				ex.printStackTrace();
-//			}
-//			if(!alive) { return; }
-
-
-
-			ResponseList<Status> userTimeline = loadRetweetersTweets(twitter, tweet.getTweetID(), retweeter, 1);
+			List<Status> userTimeline = loadRetweetersTweets(twitter, tweet.getTweetID(), retweeter, 1);
 			if(!alive) { return; }
 			if(userTimeline == null) { continue; }
 
-			//int responses = -1;
 			for(int i = userTimeline.size() - 1; i >= 0; i--) {
 				Status s = userTimeline.get(i);
-				if(/*responses < 0 &&*/ s.isRetweet() && s.getRetweetedStatus().getId() == tweet.getTweetID()) {
-					//responses = 0;
-					continue;
-				}
-				//if(responses < 0) { continue; }
-				if(s.isRetweet()) { continue; }
 				UserMentionEntity[] mentions = s.getUserMentionEntities();
+				if(s.isRetweet()) { continue; }
 				if(mentions == null || mentions.length > 0) { continue; }
 
 				log.debug(s.getId() + ":" + s.getCreatedAt() + "(" + s.isRetweet() + ") " + s.getText());
@@ -343,12 +322,7 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 
 				insertRetweeter(twitter.getId(), tweet.getTweetID(), retweeter);
 				break;
-				//if(responses++ > maxStores) { break; }
 			}
-
-			//if(responses > 0) {
-			//	insertRetweeter(twitter.getId(), tweet.getTweetID(), retweeter);
-			//}
 		}
 
 		if(dtos.size() > 0) { rtDao.insertBatch(dtos); }
@@ -371,7 +345,7 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 	 * @return
 	 * @throws TwitterException
 	 */
-	private ResponseList<Status> loadRetweetersTweets(Twitter twitter, long retweetTo, long retweeter, int page) throws TwitterException {
+	private List<Status> loadRetweetersTweets(Twitter twitter, long retweetTo, long retweeter, int page) throws TwitterException {
 		if(!alive) { return null; }
 		if(page > timelinePages) {
 			log.info(retweetTo + " retweet by " + retweeter + " は " + (timelinePages*100) + "件以上検索しても発見できないので除外します。");
@@ -382,25 +356,19 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 		Paging paging = new Paging(retweetTo);
 		paging.setPage(page);
 		paging.setCount(100);
-		//ResponseList<Status> userTimeline = twitter.getUserTimeline(retweeter, paging);
 		ResponseList<Status> userTimeline = gtUserTimeline(twitter, retweeter, paging);
 
 		if(userTimeline.size() == 0) { return null; }
 
+		List<Status> result = new ArrayList<Status>();
 		for(Status s : userTimeline) {
+			result.add(s);
 			if(s.isRetweet()) {
 				if(s.getRetweetedStatus().getId() != retweetTo) { continue; }
 				log.debug("found!!");
-				return userTimeline;
+				return result;
 			}
 		}
-
-//		try {
-//			sleep(timelineInterval);
-//		} catch(InterruptedException ex) {
-//			ex.printStackTrace();
-//		}
-//		if(!alive) { return null; }
 
 		return loadRetweetersTweets(twitter, retweetTo, retweeter, page + 1);
 	}
