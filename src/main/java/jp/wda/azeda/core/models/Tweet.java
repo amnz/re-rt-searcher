@@ -19,6 +19,7 @@
 package jp.wda.azeda.core.models;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 
 import jp.wda.azeda.dao.Retweet;
 
@@ -34,6 +35,7 @@ import jp.wda.azeda.dao.Retweet;
 public class Tweet implements Serializable {
 	/** */
 	private static final long serialVersionUID = -7431667688601211263L;
+	private static final SimpleDateFormat DF = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	public Tweet() {
 		super();
@@ -44,9 +46,15 @@ public class Tweet implements Serializable {
 
 		this.screenName = t.getScreenName();
 		this.ID = "" + t.getTweetID();
+		this.text = t.getTweettext();
+		this.createdAt = DF.format(t.getCreatedat());
+		this.skiptweets = String.valueOf(t.getSkiptweets());
 	}
 
 	public String screenName;
 	public String ID;
+	public String text;
+	public String createdAt;
+	public String skiptweets;
 
 }

@@ -1,6 +1,7 @@
 package jp.wda.azeda.dao;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import org.seasar.dao.annotation.tiger.Bean;
@@ -28,6 +29,15 @@ public class Retweet implements Serializable {
 
 	/** スクリーンネーム. */
 	private String screenName;
+
+	/** ツイート本文. */
+	private String tweettext;
+
+	/** ツイート日時. */
+	private Timestamp createdat;
+
+	/** リツイートからの発言数. */
+	private Integer skiptweets;
 
 	/** 登録日時. */
 	private Date registeredAt;
@@ -116,6 +126,66 @@ public class Retweet implements Serializable {
 	@Column("ScreenName")
 	public String getScreenName() {
 		return this.screenName;
+	}
+
+	/**
+	 * ツイート本文 を設定します.
+	 *
+	 * @param tweettext
+	 *            ツイート本文
+	 */
+	public void setTweettext(String tweettext) {
+		this.tweettext = tweettext;
+	}
+
+	/**
+	 * ツイート本文 を取得します.
+	 *
+	 * @return ツイート本文
+	 */
+	@Column("tweettext")
+	public String getTweettext() {
+		return this.tweettext;
+	}
+
+	/**
+	 * ツイート日時 を設定します.
+	 *
+	 * @param createdat
+	 *            ツイート日時
+	 */
+	public void setCreatedat(Timestamp createdat) {
+		this.createdat = createdat;
+	}
+
+	/**
+	 * ツイート日時 を取得します.
+	 *
+	 * @return ツイート日時
+	 */
+	@Column("createdat")
+	public Timestamp getCreatedat() {
+		return this.createdat;
+	}
+
+	/**
+	 * リツイートからの発言数 を設定します.
+	 *
+	 * @param skiptweets
+	 *            リツイートからの発言数
+	 */
+	public void setSkiptweets(Integer skiptweets) {
+		this.skiptweets = skiptweets;
+	}
+
+	/**
+	 * リツイートからの発言数 を取得します.
+	 *
+	 * @return リツイートからの発言数
+	 */
+	@Column("skiptweets")
+	public Integer getSkiptweets() {
+		return this.skiptweets;
 	}
 
 	/**

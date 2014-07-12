@@ -184,7 +184,7 @@ public class TwitterServiceImpl extends ServiceBase implements TwitterService {
 	public Responses getResponses(long tweetID) {
 		Responses result = new Responses();
 
-		List<Retweet> tweets = resDao.getResponses(tweetID);
+		List<Retweet> tweets = resDao.getResponsesBySkip(tweetID, 1);
 		for(Retweet t : tweets) {
 			result.tweets.add(new Tweet(t));
 		}

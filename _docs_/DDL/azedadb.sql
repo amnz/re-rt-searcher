@@ -1,8 +1,8 @@
 
 /* Drop Tables */
 
-DROP TABLE IF EXISTS Retweeters;
 DROP TABLE IF EXISTS RetweetedTweets;
+DROP TABLE IF EXISTS Retweeters;
 DROP TABLE IF EXISTS StoredAccessTokens;
 DROP TABLE IF EXISTS AuthorizedUsers;
 DROP TABLE IF EXISTS Retweets;
@@ -39,6 +39,8 @@ CREATE TABLE RetweetedTweets
 	TweetID bigint NOT NULL,
 	-- ユーザID
 	UserID bigint NOT NULL,
+	TweetText varchar,
+	CreatedAt timestamp,
 	RegisteredAt timestamp DEFAULT now() NOT NULL,
 	PRIMARY KEY (TweetID)
 ) WITHOUT OIDS;
@@ -61,6 +63,8 @@ CREATE TABLE Retweets
 	RetweetTo bigint NOT NULL,
 	RetweeterID bigint NOT NULL,
 	ScreenName varchar NOT NULL,
+	TweetText varchar,
+	CreatedAt timestamp,
 	RegisteredAt timestamp DEFAULT now() NOT NULL,
 	PRIMARY KEY (TweetID, RetweetTo)
 ) WITHOUT OIDS;
@@ -69,7 +73,7 @@ CREATE TABLE Retweets
 
 /* Create Foreign Keys */
 
-ALTER TABLE Retweeters
+ALTER TABLE RetweetedTweets
 	ADD FOREIGN KEY (UserID)
 	REFERENCES StoredAccessTokens (UserID)
 	ON UPDATE RESTRICT
@@ -77,7 +81,7 @@ ALTER TABLE Retweeters
 ;
 
 
-ALTER TABLE RetweetedTweets
+ALTER TABLE Retweeters
 	ADD FOREIGN KEY (UserID)
 	REFERENCES StoredAccessTokens (UserID)
 	ON UPDATE RESTRICT

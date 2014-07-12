@@ -27,6 +27,12 @@ public class RetweetedTweet implements Serializable {
 	/** ツイートID. */
 	private Long tweetID;
 
+	/** ツイート本文. */
+	private String tweettext;
+
+	/** ツイート日時. */
+	private Timestamp createdat;
+
 	/** 登録日時. */
 	private Timestamp registeredAt;
 
@@ -74,6 +80,46 @@ public class RetweetedTweet implements Serializable {
 	@Column("tweetid")
 	public Long getTweetID() {
 		return this.tweetID;
+	}
+
+	/**
+	 * ツイート本文 を設定します.
+	 *
+	 * @param tweettext
+	 *            ツイート本文
+	 */
+	public void setTweettext(String tweettext) {
+		this.tweettext = tweettext;
+	}
+
+	/**
+	 * ツイート本文 を取得します.
+	 *
+	 * @return ツイート本文
+	 */
+	@Column("tweettext")
+	public String getTweettext() {
+		return this.tweettext;
+	}
+
+	/**
+	 * ツイート日時 を設定します.
+	 *
+	 * @param createdat
+	 *            ツイート日時
+	 */
+	public void setCreatedat(Timestamp createdat) {
+		this.createdat = createdat;
+	}
+
+	/**
+	 * ツイート日時 を取得します.
+	 *
+	 * @return ツイート日時
+	 */
+	@Column("createdat")
+	public Timestamp getCreatedat() {
+		return this.createdat;
 	}
 
 	/**

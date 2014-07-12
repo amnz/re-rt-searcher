@@ -197,6 +197,8 @@ public class UserCrawlerImpl extends Thread implements UserCrawler {
 			RetweetedTweet dto = new RetweetedTweet();
 			dto.setTweetID(s.getId());
 			dto.setUserID(userID);
+			dto.setTweettext(s.getText());
+			dto.setCreatedat(new Timestamp(s.getCreatedAt().getTime()));
 			dtos.add(dto);
 		}
 		if(!alive) { return; }

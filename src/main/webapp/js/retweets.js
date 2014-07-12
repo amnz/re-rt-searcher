@@ -120,11 +120,12 @@
 						for (var i = 0; i < data.tweets.length; i++) {
 							var tweet = data.tweets[i];
 							var id = tweet.ID;
-							var t = $('<blockquote class="twitter-tweet" lang="ja" data-conversation="none" data-cards="hidden"><p>...</p><a href="https://twitter.com/' + tweet.screenName + '/status/' + id + '">...</a></blockquote>');
+							//var t = $('<blockquote class="twitter-tweet" lang="ja" data-conversation="none" data-cards="hidden"><p>...</p><a href="https://twitter.com/' + tweet.screenName + '/status/' + id + '">...</a></blockquote>');
+							var t = $('<blockquote><p><span class="screenName">' + tweet.screenName + '</span>' + tweet.text + '</p><a href="https://twitter.com/' + tweet.screenName + '/status/' + id + '">' + tweet.createdAt + '</a></blockquote>');
 							$div.append(t);
 						}
 
-						twttr.widgets.load();
+						//twttr.widgets.load();
 				}).fail(function(data, status, err, callback) {
 				});
 			},

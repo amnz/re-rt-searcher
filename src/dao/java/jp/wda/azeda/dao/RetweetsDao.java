@@ -46,6 +46,22 @@ public interface RetweetsDao {
 
 	/**
 	 *
+	 * @param retweetTo
+	 * @return
+	 */
+	@Query("retweetTo=? and skiptweets<=? order by tweetid desc")
+	public List<Retweet> getResponsesBySkip(long retweetTo, int skipsLimit);
+
+	/**
+	 *
+	 * @param retweetTo
+	 * @return
+	 */
+	@Query("retweetTo=? order by tweetid desc limit ? offset ?")
+	public List<Retweet> getResponsesByLimit(long retweetTo, int limit, int offset);
+
+	/**
+	 *
 	 * @param dtos
 	 * @return
 	 */

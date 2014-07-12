@@ -310,11 +310,12 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 			if(!alive) { return; }
 			if(userTimeline == null) { continue; }
 
+			int skips = 0;
 			for(int i = userTimeline.size() - 1; i >= 0; i--) {
 				Status s = userTimeline.get(i);
 				UserMentionEntity[] mentions = s.getUserMentionEntities();
-				if(s.isRetweet()) { continue; }
-				if(mentions == null || mentions.length > 0) { continue; }
+				if(s.isRetweet()) { skips++; continue; }
+				if(mentions == null || mentions.length > 0) { skips++; continue; }
 
 				log.debug(s.getId() + ":" + s.getCreatedAt() + "(" + s.isRetweet() + ") " + s.getText());
 
@@ -322,6 +323,9 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 				retweet.setTweetID(s.getId());
 				retweet.setRetweetTo(tweet.getTweetID());
 				retweet.setRetweeterID(retweeter);
+				retweet.setTweettext(s.getText());
+				retweet.setCreatedat(new Timestamp(s.getCreatedAt().getTime()));
+				retweet.setSkiptweets(skips);
 				retweet.setScreenName(status.getUser().getScreenName());
 				dtoRetweets.add(retweet);
 

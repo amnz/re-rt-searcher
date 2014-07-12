@@ -25,7 +25,7 @@
 		<property name="retweetsInterval">60000</property><!-- msec. -->
 		<property name="timelineInterval">5000</property><!-- msec. -->
 		<property name="timelinePages">3</property><!-- msec. -->
-		<property name="retweetExpired">120</property><!-- min. -->
+		<property name="retweetExpired">1440</property><!-- min. -->
 		<property name="maxStores">3</property><!-- min. -->
 	</component>
 
