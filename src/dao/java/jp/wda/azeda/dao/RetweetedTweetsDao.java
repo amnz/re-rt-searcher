@@ -43,7 +43,7 @@ public interface RetweetedTweetsDao {
 	 * @param oldest
 	 * @return
 	 */
-	@Query("RetweetedTweets.UserID=? and RetweetedTweets.RegisteredAt > ?")
+	@Query("RetweetedTweets.UserID=? and RetweetedTweets.RegisteredAt > ? order by RegisteredAt desc")
 	public List<RetweetedTweet> getAll(long userID, Timestamp oldest);
 
 	/**
