@@ -183,13 +183,13 @@ public class UserCrawlerImpl extends Thread implements UserCrawler {
 		List<Status> retweets = twitter.getRetweetsOfMe();
 		if(!alive) { return; }
 
-		List<RetweetedTweet> registered = dao.getAll(userID, new Timestamp(System.currentTimeMillis() - 365*24*60*60*1000));
+		List<RetweetedTweet> registered = dao.getAll(userID, new Timestamp(System.currentTimeMillis() - 365*24*60*60*1000L));
 		List<Long> registeredIDs = new ArrayList<Long>();
 		for(RetweetedTweet t : registered) { registeredIDs.add(t.getTweetID()); }
 		if(!alive) { return; }
 
 		List<RetweetedTweet> dtos = new ArrayList<RetweetedTweet>();
-		long oldest = System.currentTimeMillis() - expired*24*60*60*1000;
+		long oldest = System.currentTimeMillis() - expired*24*60*60*1000L;
 		for(Status s : retweets) {
 			if(registeredIDs.contains(s.getId()))   { continue; }
 			if(s.getCreatedAt().getTime() < oldest) { continue; }

@@ -297,7 +297,7 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 
 		for(Status status : retweets.values()) {
 			long retweeter = status.getUser().getId();
-			long oldest = System.currentTimeMillis() - retweetExpired*60*1000;
+			long oldest = System.currentTimeMillis() - retweetExpired*60*1000L;
 			if(status.getCreatedAt().getTime() < oldest) {
 				log.info(tweet.getTweetID() + " retweet by " + status.getUser().getScreenName() + " は " + retweetExpired + "分以上経過しているので除外します。");
 				insertRetweeter(twitter.getId(), tweet.getTweetID(), retweeter);
@@ -364,7 +364,7 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 	 */
 	private void loadTweets() {
 		log.debug("get retweets.");
-		tweets = dao.getAll(userID, new Timestamp(System.currentTimeMillis() - expired*24*60*60*1000));
+		tweets = dao.getAll(userID, new Timestamp(System.currentTimeMillis() - expired*24*60*60*1000L));
 	}
 
 	/**
@@ -417,7 +417,7 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 		if(getRetweetsTimer == 0) {
 			getRetweetsTimer = System.currentTimeMillis();
 		}
-		long waiting = 15*60*1000 - (System.currentTimeMillis() - getRetweetsTimer);
+		long waiting = 15*60*1000L - (System.currentTimeMillis() - getRetweetsTimer);
 		if(++getRetweetsCounter >= 15) {
 			if(waiting > 0) {
 				log.info("レイトリミット制限のため、getRetweetsを" + (waiting / 1000) + "秒お休みします。");
@@ -436,7 +436,7 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 		} catch(TwitterException ex) {
 			log.error("getRetweetsでtwitter例外が発生したので15分お休みします。", ex);
 			try {
-				sleep(15*60*1000);
+				sleep(15*60*1000L);
 			} catch(InterruptedException exx) {
 				log.error("", exx);
 			}
@@ -458,7 +458,7 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 		if(gtUserTimelineTimer == 0) {
 			gtUserTimelineTimer = System.currentTimeMillis();
 		}
-		long waiting = 15*60*1000 - (System.currentTimeMillis() - gtUserTimelineTimer);
+		long waiting = 15*60*1000L - (System.currentTimeMillis() - gtUserTimelineTimer);
 		if(++gtUserTimelineCounter >= 180) {
 			if(waiting > 0) {
 				log.info("レイトリミット制限のため、gtUserTimelineを" + (waiting / 1000) + "秒お休みします。");
@@ -477,7 +477,7 @@ public class RetweetsCrawlerImpl extends Thread implements RetweetsCrawler {
 		} catch(TwitterException ex) {
 			log.error("gtUserTimelineでtwitter例外が発生したので15分お休みします。", ex);
 			try {
-				sleep(15*60*1000);
+				sleep(15*60*1000L);
 			} catch(InterruptedException exx) {
 				log.error("", exx);
 			}
